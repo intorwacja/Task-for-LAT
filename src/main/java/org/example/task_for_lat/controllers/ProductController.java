@@ -35,5 +35,8 @@ public class ProductController {
         return productService.updateProduct(id, updatedProduct);
     }
 
-
+    @GetMapping("/calculate")
+    public double calculateDiscountPrice(@RequestParam Long id, @RequestParam String code) {
+        return productService.calculatePrice(id, code);
+    }
 }

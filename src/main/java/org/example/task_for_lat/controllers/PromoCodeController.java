@@ -4,7 +4,6 @@ import org.example.task_for_lat.entity.PromoCode;
 import org.example.task_for_lat.services.PromoCodeService;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.util.List;
 
 @RestController

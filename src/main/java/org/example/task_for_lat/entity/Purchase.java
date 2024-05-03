@@ -1,13 +1,11 @@
 package org.example.task_for_lat.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Date;
+import java.util.Set;
 
 @Entity
 public class Purchase {
@@ -18,6 +16,9 @@ public class Purchase {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull
     private Date purchaseDate;
+
+    @ManyToMany
+    Set<Product> products;
 
 
 }

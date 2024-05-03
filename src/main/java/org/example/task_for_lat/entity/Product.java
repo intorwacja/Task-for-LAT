@@ -23,15 +23,8 @@ public class Product {
 
     private String description;
 
-    @ManyToMany
-    Set<PromoCode> avaliblePromoCodes;
-
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -56,14 +49,6 @@ public class Product {
 
     public void setCurrency(Currency currency) {
         this.currency = currency;
-    }
-
-    public Set<PromoCode> getAvaliblePromoCodes() {
-        return avaliblePromoCodes;
-    }
-
-    public void setAvaliblePromoCodes(Set<PromoCode> avaliblePromoCodes) {
-        this.avaliblePromoCodes = avaliblePromoCodes;
     }
 
     public String getDescription() {

@@ -28,7 +28,6 @@ public class PromoCode {
     private int usageLimit;
 
     @Enumerated(EnumType.STRING)
-    @NotNull
     private Currency codeCurrency;
 
     @NotNull
@@ -38,23 +37,8 @@ public class PromoCode {
     @NotNull
     private Date expDate;
 
-    @ManyToMany
-    Set<Product> discountedProducts;
-
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Set<Product> getDiscountedProducts() {
-        return discountedProducts;
-    }
-
-    public void setDiscountedProducts(Set<Product> discountedProducts) {
-        this.discountedProducts = discountedProducts;
     }
 
     public String getCode() {
