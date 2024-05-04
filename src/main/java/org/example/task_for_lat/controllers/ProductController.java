@@ -1,6 +1,5 @@
 package org.example.task_for_lat.controllers;
 import org.example.task_for_lat.entity.Product;
-import org.example.task_for_lat.entity.PromoCode;
 import org.example.task_for_lat.services.ProductService;
 import org.springframework.web.bind.annotation.*;
 

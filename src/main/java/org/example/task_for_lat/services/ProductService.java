@@ -10,9 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +52,10 @@ public class ProductService{
             if (updatedProduct.getCurrency() != null) {
                 existingProduct.setCurrency(updatedProduct.getCurrency());
             }
+
+            if(updatedProduct.getDescription() != null){
+                existingProduct.setDescription(updatedProduct.getDescription());
+            }
             return productRepository.save(existingProduct);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
@@ -61,8 +63,7 @@ public class ProductService{
     }
 
     public ProductDto productToProductDto(Product product) {
-        ProductDto productDto = new ProductDto(product.getName(), product.getPrice(), product.getCurrency(), product.getDescription());
-        return productDto;
+        return new ProductDto(product.getName(), product.getPrice(), product.getCurrency(), product.getDescription());
     }
 
     public double calculatePrice(Long id, String code) {
@@ -79,7 +80,7 @@ public class ProductService{
             if(promoCode.getUsageLimit() > 0 && expirationTime.isAfter(currentTime)) {
 
                 double regularPrice = product.getPrice();
-                double discountPrice = 0;
+                double discountPrice;
 
                 if (promoCode.getPromoCodeType().equals(PromoCodeType.value)) {
                     if (promoCode.getCodeCurrency().equals(product.getCurrency())) {

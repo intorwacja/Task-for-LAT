@@ -113,12 +113,14 @@ public class PurchaseService {
 
         StringBuilder report = new StringBuilder();
 
-        report.append("| Currency | Total amount   | Total Discount   | No of purchases |\n");
-        report.append("|----------|----------------|------------------|-----------------|\n");
+        report.append("<pre>");
+        report.append("| Currency | Total amount   | Total Discount   | No of purchases |<br>");
+        report.append("|----------|----------------|------------------|-----------------|<br>");
 
-        report.append(String.format("| USD      | $%8.2f      | $%8.2f        | %d               |\n", totalUSD, totalDiscountUSD, totalUSDPurchase));
-        report.append(String.format("| EUR      | €%8.2f      | €%8.2f        | %d               |\n", totalEUR, totalDiscountEUR, totalEURPurchase));
-        report.append(String.format("| GBP      | £%8.2f      | £%8.2f        | %d               |\n", totalGBP, totalDiscountGBP, totalGBPPurchase));
+        report.append(String.format("| USD      | $%8.2f      | $%8.2f        | %d               |<br>", totalUSD, totalDiscountUSD, totalUSDPurchase));
+        report.append(String.format("| EUR      | €%8.2f      | €%8.2f        | %d               |<br>", totalEUR, totalDiscountEUR, totalEURPurchase));
+        report.append(String.format("| GBP      | £%8.2f      | £%8.2f        | %d               |<br>", totalGBP, totalDiscountGBP, totalGBPPurchase));
+        report.append("</pre>");
 
         return report.toString();
     }

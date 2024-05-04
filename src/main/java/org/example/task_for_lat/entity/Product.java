@@ -3,8 +3,6 @@ package org.example.task_for_lat.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.Set;
-
 @Entity
 public class Product {
     @Id

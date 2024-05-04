@@ -3,7 +3,6 @@ package org.example.task_for_lat.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,6 +23,10 @@ public class Purchase {
 
     @ManyToOne
     private PromoCode promoCode;
+
+    public Long getId() {
+        return id;
+    }
 
     public LocalDateTime getPurchaseDate() {
         return purchaseDate;
