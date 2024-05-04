@@ -1,8 +1,7 @@
 package org.example.task_for_lat.controllers;
 
 import org.example.task_for_lat.services.PurchaseService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/purchase")
@@ -13,5 +12,14 @@ public class PurchaseController {
         this.purchaseService = purchaseService;
     }
 
+    @PostMapping("/{id}")
+    public void buyItem(@PathVariable Long id, @RequestParam String code) {
+        purchaseService.buyItem(id, code);
+    }
+
+    @GetMapping("/report")
+    public String report() {
+        return purchaseService.generateReport();
+    }
 
 }

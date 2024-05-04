@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -33,9 +34,9 @@ public class PromoCode {
     @NotNull
     private double codeValue;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @NotNull
-    private Date expDate;
+    private LocalDateTime expDate;
 
     public Long getId() {
         return id;
@@ -73,11 +74,11 @@ public class PromoCode {
         this.codeValue = value;
     }
 
-    public Date getExpDate() {
+    public LocalDateTime getExpDate() {
         return expDate;
     }
 
-    public void setExpDate(Date expDate) {
+    public void setExpDate(LocalDateTime expDate) {
         this.expDate = expDate;
     }
 

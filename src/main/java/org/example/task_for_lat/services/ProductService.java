@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,23 +73,31 @@ public class ProductService{
             Product product = optionalProduct.get();
             PromoCode promoCode = optionalPromoCode.get();
 
-            double regularPrice = product.getPrice();
-            double discountPrice = 0;
+            LocalDateTime currentTime = LocalDateTime.now();
+            LocalDateTime expirationTime = promoCode.getExpDate();
 
-            if(promoCode.getPromoCodeType().equals(PromoCodeType.value)){
-                if(promoCode.getCodeCurrency().equals(product.getCurrency())){
-                    discountPrice = regularPrice - promoCode.getCodeValue();
-                    if(discountPrice > 0) {
-                        return discountPrice;
-                    }else{
-                        return 0;
+            if(promoCode.getUsageLimit() > 0 && expirationTime.isAfter(currentTime)) {
+
+                double regularPrice = product.getPrice();
+                double discountPrice = 0;
+
+                if (promoCode.getPromoCodeType().equals(PromoCodeType.value)) {
+                    if (promoCode.getCodeCurrency().equals(product.getCurrency())) {
+                        discountPrice = regularPrice - promoCode.getCodeValue();
+                        if (discountPrice > 0) {
+                            return discountPrice;
+                        } else {
+                            return 0;
+                        }
+                    } else {
+                        return regularPrice;
                     }
-                }else{
-                    return regularPrice;
+                } else {
+                    discountPrice = regularPrice - (regularPrice * (promoCode.getCodeValue() * 0.01));
+                    return discountPrice;
                 }
             }else{
-                discountPrice = regularPrice - (regularPrice * (promoCode.getCodeValue() * 0.01));
-                return discountPrice;
+                return product.getPrice();
             }
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product or promo code not found");
