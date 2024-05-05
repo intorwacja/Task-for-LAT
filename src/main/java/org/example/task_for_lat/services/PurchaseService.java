@@ -5,6 +5,7 @@ import org.example.task_for_lat.repositories.ProductRepository;
 import org.example.task_for_lat.repositories.PromoCodeRepository;
 import org.example.task_for_lat.repositories.PurchaseRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,7 +25,7 @@ public class PurchaseService {
         this.promoCodeRepository = promoCodeRepository;
     }
 
-    public void buyItem(Long id, String code){
+    public ResponseEntity<Void> buyItem(Long id, String code){
 
         Optional<Product> optionalProduct = productRepository.findById(id);
         Optional<PromoCode> optionalPromoCode = promoCodeRepository.findByCode(code);
@@ -44,30 +45,31 @@ public class PurchaseService {
                         purchase.setPurchasePrice(product.getPrice() - promoCode.getCodeValue());
                         promoCode.setUsageLimit(promoCode.getUsageLimit() - 1);
                         purchaseRepository.save(purchase);
+                        return new ResponseEntity<>(HttpStatus.OK);
                     }else{
                         purchase.setPurchasePrice(product.getPrice());
                         purchaseRepository.save(purchase);
+                        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                     }
                 }else{
                     purchase.setPurchasePrice(product.getPrice() - product.getPrice() * (promoCode.getCodeValue() * 0.01));
                     purchase.setPromoCode(promoCode);
                     promoCode.setUsageLimit(promoCode.getUsageLimit() - 1);
                     purchaseRepository.save(purchase);
+                    return new ResponseEntity<>(HttpStatus.OK);
                 }
-
-                purchaseRepository.save(purchase);
             }else {
                 Purchase purchase = new Purchase();
                 purchase.setPurchaseDate(currentTime);
                 purchase.setPurchasePrice(product.getPrice());
                 purchase.setProduct(product);
                 purchaseRepository.save(purchase);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
         }else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
         }
-
     }
 
     public String generateReport(){

@@ -1,6 +1,7 @@
 package org.example.task_for_lat.controllers;
 import org.example.task_for_lat.entity.Product;
 import org.example.task_for_lat.services.ProductService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class ProductController {
     }
 
     @GetMapping("/calculate")
-    public double calculateDiscountPrice(@RequestParam Long id, @RequestParam String code) {
+    public ResponseEntity<Double> calculateDiscountPrice(@RequestParam Long id, @RequestParam String code) {
         return productService.calculatePrice(id, code);
     }
 }

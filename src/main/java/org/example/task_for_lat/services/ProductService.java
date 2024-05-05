@@ -7,6 +7,7 @@ import org.example.task_for_lat.model.ProductDto;
 import org.example.task_for_lat.repositories.ProductRepository;
 import org.example.task_for_lat.repositories.PromoCodeRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -66,7 +67,7 @@ public class ProductService{
         return new ProductDto(product.getName(), product.getPrice(), product.getCurrency(), product.getDescription());
     }
 
-    public double calculatePrice(Long id, String code) {
+    public ResponseEntity<Double> calculatePrice(Long id, String code) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         Optional<PromoCode> optionalPromoCode = promoCodeRepository.findByCode(code);
 
@@ -86,19 +87,19 @@ public class ProductService{
                     if (promoCode.getCodeCurrency().equals(product.getCurrency())) {
                         discountPrice = regularPrice - promoCode.getCodeValue();
                         if (discountPrice > 0) {
-                            return discountPrice;
+                            return new ResponseEntity<>(discountPrice, HttpStatus.OK);
                         } else {
-                            return 0;
+                            return new ResponseEntity<>(0.00, HttpStatus.OK);
                         }
                     } else {
-                        return regularPrice;
+                        return new ResponseEntity<>(regularPrice, HttpStatus.BAD_REQUEST);
                     }
                 } else {
                     discountPrice = regularPrice - (regularPrice * (promoCode.getCodeValue() * 0.01));
-                    return discountPrice;
+                    return new ResponseEntity<>(discountPrice, HttpStatus.OK);
                 }
             }else{
-                return product.getPrice();
+                return new ResponseEntity<>(product.getPrice(), HttpStatus.BAD_REQUEST);
             }
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product or promo code not found");

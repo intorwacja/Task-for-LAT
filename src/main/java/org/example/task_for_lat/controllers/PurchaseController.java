@@ -1,6 +1,7 @@
 package org.example.task_for_lat.controllers;
 
 import org.example.task_for_lat.services.PurchaseService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,8 +14,8 @@ public class PurchaseController {
     }
 
     @PostMapping("/{id}")
-    public void buyItem(@PathVariable Long id, @RequestParam String code) {
-        purchaseService.buyItem(id, code);
+    public ResponseEntity<Void> buyItem(@PathVariable Long id, @RequestParam String code) {
+        return purchaseService.buyItem(id, code);
     }
 
     @GetMapping("/report")
