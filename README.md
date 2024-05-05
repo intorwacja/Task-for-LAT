@@ -5,31 +5,30 @@
 
 ### GET
 
-1. localhost:8080/products/{id}  
-      
+1. http://localhost:8080/products/{id}  
     Returns a product from database with certain ID.  
 
-2. localhost:8080/products/all  
+2. http://localhost:8080/products/all  
     Returns every product stored in database.
 
-3. localhost:8080/products/calculate?id={id}&code={code}  
+3. http://localhost:8080/products/calculate?id={id}&code={code}  
     Calculates price of the product with promocode.  
 
-4. localhost:8080/promocodes/{code}  
+4. http://localhost:8080/promocodes/{code}  
     Returns promocode with certain code.
 
-5. localhost:8080/promocodes/all  
+5. http://localhost:8080/promocodes/all  
     Returns every promocode in database.
 
-6. localhost:8080/purchase/report  
+6. http://localhost:8080/purchase/report  
     Generates report of purchases sorted by currency.  
   
 ### PUT
-1. localhost:8080/{id}  
+1. http://localhost:8080/products/{id}  
     Changes already existing product in database.  
     Request example:  
 
-    PUT localhost:8080/products/1  
+    PUT http://localhost:8080/products/1  
     Content-Type: application/json    
      
     {  
@@ -41,11 +40,11 @@
 
 ### POST  
 
-1. localhost:8080/products/add  
+1. http://localhost:8080/products/add  
     Adds product to database.  
     Request example:  
 
-    POST localhost:8080/products/add     
+    POST http://localhost:8080/products/add     
     Content-Type: application/json  
    
     {  
@@ -55,7 +54,7 @@
         "description": "Product example"  
     }  
 
-2. localhost:8080/promocodes/add  
+2. http://localhost:8080/promocodes/add  
     Adds promocode to database.  
 
     Request example  
@@ -78,4 +77,3 @@
     Request example:  
 
     POST http://localhost:8080/purchase/1?code=examplepromocode  
-4. 
