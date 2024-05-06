@@ -3,6 +3,8 @@ package org.example.task_for_lat.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -16,10 +18,13 @@ public class Purchase {
     private LocalDateTime purchaseDate;
 
     @NotNull
-    private double purchasePrice;
+    private BigDecimal purchasePrice;
 
     @ManyToOne
     private Product product;
+
+    @NotNull
+    private BigDecimal regularPrice;
 
     @ManyToOne
     private PromoCode promoCode;
@@ -36,11 +41,11 @@ public class Purchase {
         this.purchaseDate = purchaseDate;
     }
 
-    public double getPurchasePrice() {
+    public BigDecimal getPurchasePrice() {
         return purchasePrice;
     }
 
-    public void setPurchasePrice(double purchasePrice) {
+    public void setPurchasePrice(BigDecimal purchasePrice) {
         this.purchasePrice = purchasePrice;
     }
 
@@ -58,5 +63,13 @@ public class Purchase {
 
     public void setPromoCode(PromoCode promoCode) {
         this.promoCode = promoCode;
+    }
+
+    public BigDecimal getRegularPrice() {
+        return regularPrice;
+    }
+
+    public void setRegularPrice(BigDecimal regularPrice) {
+        this.regularPrice = regularPrice;
     }
 }

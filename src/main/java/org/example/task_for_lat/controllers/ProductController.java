@@ -4,6 +4,7 @@ import org.example.task_for_lat.services.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -36,7 +37,7 @@ public class ProductController {
     }
 
     @GetMapping("/calculate")
-    public ResponseEntity<Double> calculateDiscountPrice(@RequestParam Long id, @RequestParam String code) {
+    public ResponseEntity<BigDecimal> calculateDiscountPrice(@RequestParam Long id, @RequestParam String code) {
         return productService.calculatePrice(id, code);
     }
 }

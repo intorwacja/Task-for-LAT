@@ -3,7 +3,6 @@ package org.example.task_for_lat.services;
 import org.example.task_for_lat.entity.Product;
 import org.example.task_for_lat.entity.PromoCode;
 import org.example.task_for_lat.entity.PromoCodeType;
-import org.example.task_for_lat.model.ProductDto;
 import org.example.task_for_lat.repositories.ProductRepository;
 import org.example.task_for_lat.repositories.PromoCodeRepository;
 import org.springframework.http.HttpStatus;
@@ -11,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -47,13 +47,12 @@ public class ProductService{
             if (updatedProduct.getName() != null) {
                 existingProduct.setName(updatedProduct.getName());
             }
-            if (updatedProduct.getPrice() != 0) {
+            if (updatedProduct.getPrice().compareTo(BigDecimal.ZERO) != 0) {
                 existingProduct.setPrice(updatedProduct.getPrice());
             }
             if (updatedProduct.getCurrency() != null) {
                 existingProduct.setCurrency(updatedProduct.getCurrency());
             }
-
             if(updatedProduct.getDescription() != null){
                 existingProduct.setDescription(updatedProduct.getDescription());
             }
@@ -63,11 +62,7 @@ public class ProductService{
         }
     }
 
-    public ProductDto productToProductDto(Product product) {
-        return new ProductDto(product.getName(), product.getPrice(), product.getCurrency(), product.getDescription());
-    }
-
-    public ResponseEntity<Double> calculatePrice(Long id, String code) {
+    public ResponseEntity<BigDecimal> calculatePrice(Long id, String code) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         Optional<PromoCode> optionalPromoCode = promoCodeRepository.findByCode(code);
 
@@ -80,22 +75,22 @@ public class ProductService{
 
             if(promoCode.getUsageLimit() > 0 && expirationTime.isAfter(currentTime)) {
 
-                double regularPrice = product.getPrice();
-                double discountPrice;
+                BigDecimal regularPrice = product.getPrice();
+                BigDecimal discountPrice;
 
                 if (promoCode.getPromoCodeType().equals(PromoCodeType.value)) {
                     if (promoCode.getCodeCurrency().equals(product.getCurrency())) {
-                        discountPrice = regularPrice - promoCode.getCodeValue();
-                        if (discountPrice > 0) {
+                        discountPrice = regularPrice.subtract(promoCode.getCodeValue());
+                        if (discountPrice.compareTo(BigDecimal.ZERO) > 0) {
                             return new ResponseEntity<>(discountPrice, HttpStatus.OK);
                         } else {
-                            return new ResponseEntity<>(0.00, HttpStatus.OK);
+                            return new ResponseEntity<>(new BigDecimal("0.00"), HttpStatus.OK);
                         }
                     } else {
                         return new ResponseEntity<>(regularPrice, HttpStatus.BAD_REQUEST);
                     }
                 } else {
-                    discountPrice = regularPrice - (regularPrice * (promoCode.getCodeValue() * 0.01));
+                    discountPrice = regularPrice.subtract(regularPrice.multiply(promoCode.getCodeValue().multiply(new BigDecimal("0.01"))));
                     return new ResponseEntity<>(discountPrice, HttpStatus.OK);
                 }
             }else{

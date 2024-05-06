@@ -3,6 +3,8 @@ package org.example.task_for_lat.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
+
 @Entity
 public class Product {
     @Id
@@ -13,7 +15,7 @@ public class Product {
     private String name;
 
     @NotNull
-    private double price;
+    private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
     @NotNull
@@ -33,11 +35,11 @@ public class Product {
         this.name = name;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

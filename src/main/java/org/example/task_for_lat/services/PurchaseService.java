@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -33,16 +34,17 @@ public class PurchaseService {
         if(optionalProduct.isPresent()) {
             Product product = optionalProduct.get();
             LocalDateTime currentTime = LocalDateTime.now();
+            Purchase purchase = new Purchase();
+            purchase.setProduct(product);
+            purchase.setRegularPrice(product.getPrice());
             if(optionalPromoCode.isPresent() && optionalPromoCode.get().getExpDate().isAfter(currentTime)
             && optionalPromoCode.get().getUsageLimit() > 0) {
                 PromoCode promoCode = optionalPromoCode.get();
-                Purchase purchase = new Purchase();
-                purchase.setProduct(product);
                 purchase.setPurchaseDate(LocalDateTime.now());
                 if(promoCode.getPromoCodeType().equals(PromoCodeType.value)){
                     if(promoCode.getCodeCurrency().equals(product.getCurrency())){
                         purchase.setPromoCode(promoCode);
-                        purchase.setPurchasePrice(product.getPrice() - promoCode.getCodeValue());
+                        purchase.setPurchasePrice(product.getPrice().subtract(promoCode.getCodeValue()));
                         promoCode.setUsageLimit(promoCode.getUsageLimit() - 1);
                         purchaseRepository.save(purchase);
                         return new ResponseEntity<>(HttpStatus.OK);
@@ -52,17 +54,15 @@ public class PurchaseService {
                         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                     }
                 }else{
-                    purchase.setPurchasePrice(product.getPrice() - product.getPrice() * (promoCode.getCodeValue() * 0.01));
+                    purchase.setPurchasePrice(product.getPrice().subtract(product.getPrice().multiply(promoCode.getCodeValue().multiply(new BigDecimal("0.01")))));
                     purchase.setPromoCode(promoCode);
                     promoCode.setUsageLimit(promoCode.getUsageLimit() - 1);
                     purchaseRepository.save(purchase);
                     return new ResponseEntity<>(HttpStatus.OK);
                 }
             }else {
-                Purchase purchase = new Purchase();
                 purchase.setPurchaseDate(currentTime);
                 purchase.setPurchasePrice(product.getPrice());
-                purchase.setProduct(product);
                 purchaseRepository.save(purchase);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
@@ -75,39 +75,39 @@ public class PurchaseService {
     public String generateReport(){
         List<Purchase> purchaseList = purchaseRepository.findAll();
 
-        double totalUSD = 0;
-        double totalEUR = 0;
-        double totalGBP = 0;
+        BigDecimal totalUSD = new BigDecimal("0.00");
+        BigDecimal totalEUR = new BigDecimal("0.00");
+        BigDecimal totalGBP = new BigDecimal("0.00");
 
         int totalUSDPurchase = 0;
         int totalEURPurchase = 0;
         int totalGBPPurchase = 0;
 
-        double totalDiscountUSD = 0;
-        double totalDiscountEUR = 0;
-        double totalDiscountGBP = 0;
+        BigDecimal totalDiscountUSD = new BigDecimal("0.00");
+        BigDecimal totalDiscountEUR = new BigDecimal("0.00");
+        BigDecimal totalDiscountGBP = new BigDecimal("0.00");
 
         for(Purchase purchase : purchaseList){
             switch (purchase.getProduct().getCurrency()){
                 case EUR -> {
-                    totalEUR += purchase.getPurchasePrice();
+                    totalEUR = totalEUR.add(purchase.getPurchasePrice());
                     totalEURPurchase += 1;
                     if(purchase.getPurchasePrice() != purchase.getProduct().getPrice()){
-                        totalDiscountEUR += purchase.getProduct().getPrice() - purchase.getPurchasePrice();
+                        totalDiscountEUR = totalDiscountEUR.add(purchase.getProduct().getPrice().subtract(purchase.getPurchasePrice()));
                     }
                 }
                 case GBP -> {
-                    totalGBP += purchase.getPurchasePrice();
+                    totalGBP = totalGBP.add(purchase.getPurchasePrice());
                     totalGBPPurchase += 1;
                     if(purchase.getPurchasePrice() != purchase.getProduct().getPrice()){
-                        totalDiscountGBP += purchase.getProduct().getPrice() - purchase.getPurchasePrice();
+                        totalDiscountGBP = totalDiscountGBP.add(purchase.getProduct().getPrice().subtract(purchase.getPurchasePrice()));
                     }
                 }
                 case USD -> {
-                    totalUSD += purchase.getPurchasePrice();
+                    totalUSD = totalUSD.add(purchase.getPurchasePrice());
                     totalUSDPurchase += 1;
                     if(purchase.getPurchasePrice() != purchase.getProduct().getPrice()){
-                        totalDiscountUSD += purchase.getProduct().getPrice() - purchase.getPurchasePrice();
+                        totalDiscountUSD = totalDiscountUSD.add(purchase.getProduct().getPrice().subtract(purchase.getPurchasePrice()));
                     }
                 }
             }

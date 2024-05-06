@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,7 +31,7 @@ public class PromoCode {
     private Currency codeCurrency;
 
     @NotNull
-    private double codeValue;
+    private BigDecimal codeValue;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @NotNull
@@ -63,11 +65,11 @@ public class PromoCode {
         this.usageLimit = usageLimit;
     }
 
-    public double getCodeValue() {
+    public BigDecimal getCodeValue() {
         return codeValue;
     }
 
-    public void setCodeValue(double value) {
+    public void setCodeValue(BigDecimal value) {
         this.codeValue = value;
     }
 

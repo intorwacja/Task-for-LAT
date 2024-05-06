@@ -28,12 +28,13 @@
     Changes already existing product in database.  
     Request example:  
 
+
     PUT http://localhost:8080/products/1  
     Content-Type: application/json    
      
     {  
         "name": "changed name",  
-        "price": 0,  
+        "price": "0",  
         "currency": "USD",  
         "description": "changed description"  
     }
@@ -44,20 +45,21 @@
     Adds product to database.  
     Request example:  
 
+
     POST http://localhost:8080/products/add     
     Content-Type: application/json  
    
     {  
         "name": "example product",  
-        "price": 0,  
+        "price": "0",  
         "currency": "EUR",  
         "description": "Product example"  
     }  
 
 2. http://localhost:8080/promocodes/add  
-    Adds promocode to database.  
+    Adds promocode to database.
+    Request example:  
 
-    Request example  
 
     POST http://localhost:8080/promocodes/add  
     Content-Type: application/json  
@@ -67,13 +69,13 @@
         "promoCodeType": "value",  
         "usageLimit": 5,  
         "codeCurrency": "EUR",  
-        "codeValue": 10,  
+        "codeValue": "10",  
         "expDate": "2024-05-09T12:05:02"  
-    }  
+    }
 
 3. http://localhost:8080/purchase/{id}?code={code}  
-    Adds purchase to database and decrements promocode usage (if avalible).  
-    
+    Adds purchase to database and decrements promocode usage (if available).
     Request example:  
+
 
     POST http://localhost:8080/purchase/1?code=examplepromocode  
