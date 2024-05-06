@@ -44,7 +44,7 @@ public class PurchaseService {
                 if(promoCode.getPromoCodeType().equals(PromoCodeType.value)){
                     if(promoCode.getCodeCurrency().equals(product.getCurrency())){
                         purchase.setPromoCode(promoCode);
-                        purchase.setPurchasePrice(product.getPrice().subtract(promoCode.getCodeValue()));
+                        purchase.setPurchasePrice(checkIfPriceMoreThan0(product.getPrice(),promoCode.getCodeValue()));
                         promoCode.setUsageLimit(promoCode.getUsageLimit() - 1);
                         purchaseRepository.save(purchase);
                         return new ResponseEntity<>(HttpStatus.OK);
@@ -92,22 +92,22 @@ public class PurchaseService {
                 case EUR -> {
                     totalEUR = totalEUR.add(purchase.getPurchasePrice());
                     totalEURPurchase += 1;
-                    if(purchase.getPurchasePrice() != purchase.getProduct().getPrice()){
-                        totalDiscountEUR = totalDiscountEUR.add(purchase.getProduct().getPrice().subtract(purchase.getPurchasePrice()));
+                    if(!purchase.getPurchasePrice().equals(purchase.getProduct().getPrice())){
+                        totalDiscountEUR = totalDiscountEUR.add(purchase.getRegularPrice().subtract(purchase.getPurchasePrice()));
                     }
                 }
                 case GBP -> {
                     totalGBP = totalGBP.add(purchase.getPurchasePrice());
                     totalGBPPurchase += 1;
-                    if(purchase.getPurchasePrice() != purchase.getProduct().getPrice()){
-                        totalDiscountGBP = totalDiscountGBP.add(purchase.getProduct().getPrice().subtract(purchase.getPurchasePrice()));
+                    if(!purchase.getPurchasePrice().equals(purchase.getProduct().getPrice())){
+                        totalDiscountGBP = totalDiscountGBP.add(purchase.getRegularPrice().subtract(purchase.getPurchasePrice()));
                     }
                 }
                 case USD -> {
                     totalUSD = totalUSD.add(purchase.getPurchasePrice());
                     totalUSDPurchase += 1;
-                    if(purchase.getPurchasePrice() != purchase.getProduct().getPrice()){
-                        totalDiscountUSD = totalDiscountUSD.add(purchase.getProduct().getPrice().subtract(purchase.getPurchasePrice()));
+                    if(!purchase.getPurchasePrice().equals(purchase.getProduct().getPrice())){
+                        totalDiscountUSD = totalDiscountUSD.add(purchase.getRegularPrice().subtract(purchase.getPurchasePrice()));
                     }
                 }
             }
@@ -125,5 +125,13 @@ public class PurchaseService {
         report.append("</pre>");
 
         return report.toString();
+    }
+
+    private BigDecimal checkIfPriceMoreThan0(BigDecimal price, BigDecimal discount){
+        BigDecimal finalPrice = price.subtract(discount);
+        if(finalPrice.compareTo(BigDecimal.ZERO) < 0){
+            return new BigDecimal("0.00");
+        }
+        return finalPrice;
     }
 }
